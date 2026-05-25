@@ -1,0 +1,20 @@
+# Binaries and large files
+*.mp4
+*.pth
+*.pt
+*.jpg
+*.png
+
+# Extracted data
+src/lab3/frames_input/
+src/lab3/frames_output/
+
+# OS and IDE files
+.DS_Store
+.idea/
+__pycache__/
+*.pyc
+
+# Project specific
+cv_practice-main/
+runs/
