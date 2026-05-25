@@ -13,11 +13,11 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
 def get_model(num_classes):
-    # Try to initialize without downloading any weights
+                                                       
     from torchvision.models.detection import FasterRCNN
     from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
     
-    # We need a backbone. Let's try to create one without weights.
+                                                                  
     backbone = resnet_fpn_backbone('resnet50', weights=None)
     model = FasterRCNN(backbone, num_classes=num_classes)
     return model
@@ -90,13 +90,13 @@ if __name__ == "__main__":
     model = get_model(num_classes=2)
     model.load_state_dict(torch.load("runs/lab3/fasterrcnn_extracted.pth", map_location=device))
     
-    # 1. Visualize predictions
+                              
     visualize_predictions(model, device, "src/lab3/frames_input", "runs/lab3/predictions_grid.png")
     
-    # 2. Create result video with extracted markup
+                                                  
     create_extracted_video("src/lab3/frames_input", "src/lab3/extracted_coco.json", "runs/lab3/extracted_result.mp4")
     
-    # 3. Final Summary (IoU from previous step)
+                                               
     print("\n--- Lab 3 Summary ---")
     print("1. Frames extracted from input.mp4 and output.mp4")
     print("2. Extracted markup extracted using OpenCV Differencing (Avg IoU: 0.4084)")

@@ -20,7 +20,7 @@ def parse_cvat_xml(xml_path):
             ytl = float(box.get("ytl"))
             xbr = float(box.get("xbr"))
             ybr = float(box.get("ybr"))
-            # COCO format: [x, y, w, h]
+                                       
             gt_by_frame.setdefault(fid, []).append({
                 "bbox": [xtl, ytl, xbr - xtl, ybr - ytl],
                 "label": label
@@ -34,14 +34,14 @@ def extract_opencv_boxes(in_img, out_img):
     boxes = []
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
-        if w > 20 and h > 20: # Filter small noise
+        if w > 20 and h > 20:                     
             boxes.append({"bbox": [float(x), float(y), float(w), float(h)], "label": "detected"})
     return boxes
 
 def get_boxes_yolo(model, image, conf=0.3):
     results = model(image, verbose=False)[0]
     boxes = []
-    # COCO classes for vehicles: 2: car, 3: motorcycle, 5: bus, 7: truck
+                                                                        
     VEHICLE_CLASSES = [2, 3, 5, 7]
     for box in results.boxes:
         if int(box.cls) in VEHICLE_CLASSES:
@@ -74,14 +74,14 @@ def evaluate_method(preds, gts):
             iou = calculate_iou(gt["bbox"], pred["bbox"])
             if iou > best_iou:
                 best_iou = iou
-        if best_iou > 0.3: # Match threshold
+        if best_iou > 0.3:                  
             total_iou += best_iou
             matched += 1
     return total_iou / len(gts)
 
 if __name__ == "__main__":
     gt_data = parse_cvat_xml("annotations.xml")
-    yolo_model = YOLO("yolov8n.pt") # Using nano for speed in lab environment
+    yolo_model = YOLO("yolov8n.pt")                                          
     
     frames_in = sorted([os.path.join("src/lab3/frames_input", f) for f in os.listdir("src/lab3/frames_input") if f.endswith(".jpg")])
     frames_out = sorted([os.path.join("src/lab3/frames_output", f) for f in os.listdir("src/lab3/frames_output") if f.endswith(".jpg")])
@@ -95,12 +95,12 @@ if __name__ == "__main__":
         img_out = cv2.imread(frames_out[i])
         fid = int(os.path.basename(frames_in[i]).split("_")[1].split(".")[0])
         
-        # Method 1: OpenCV Stealing
+                                   
         t0 = time.time()
         cv_boxes = extract_opencv_boxes(img_in, img_out)
         t_cv = time.time() - t0
         
-        # Method 2: YOLO API
+                            
         t0 = time.time()
         yolo_boxes = get_boxes_yolo(yolo_model, img_in)
         t_yolo = time.time() - t0
@@ -117,7 +117,7 @@ if __name__ == "__main__":
             "time_yolo": t_yolo
         })
         
-        # Store extracted markup (Method 1) for COCO
+                                                    
         extracted_annotations.append({
             "frame_id": fid,
             "file_name": os.path.basename(frames_in[i]),
@@ -129,14 +129,14 @@ if __name__ == "__main__":
         if i % 50 == 0:
             print(f"Frame {i}: IoU CV={iou_cv:.3f}, IoU YOLO={iou_yolo:.3f}")
 
-    # Summarize
+               
     avg_iou_cv = np.mean([r["iou_cv"] for r in results])
     avg_iou_yolo = np.mean([r["iou_yolo"] for r in results])
     print(f"\nFinal Comparison:")
     print(f"OpenCV Difference (Stealing): Avg IoU = {avg_iou_cv:.4f}")
     print(f"YOLOv8 (Public API):         Avg IoU = {avg_iou_yolo:.4f}")
 
-    # Save extracted markup to COCO
+                                   
     coco_dataset = {
         "images": [],
         "annotations": [],

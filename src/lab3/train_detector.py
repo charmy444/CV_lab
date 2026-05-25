@@ -35,7 +35,7 @@ class ExtractedDataset(torch.utils.data.Dataset):
         for ann in anns:
             x, y, w, h = ann['bbox']
             boxes.append([x, y, x + w, y + h])
-            labels.append(1) # Only one category: car
+            labels.append(1)                         
         
         if not boxes:
             boxes = torch.zeros((0, 4), dtype=torch.float32)
@@ -68,12 +68,12 @@ if __name__ == "__main__":
     print(f"Using device: {device}")
     
     dataset = ExtractedDataset("src/lab3/extracted_coco.json", "src/lab3/frames_input")
-    # Extremely small subset for the sake of the environment
+                                                            
     indices = torch.randperm(len(dataset)).tolist()[:5]
     dataset = torch.utils.data.Subset(dataset, indices)
     
-    # Split
-    train_ds, val_ds = dataset, dataset # Use same for demo
+           
+    train_ds, val_ds = dataset, dataset                    
     
     train_loader = torch.utils.data.DataLoader(train_ds, batch_size=1, shuffle=True, collate_fn=collate_fn)
     

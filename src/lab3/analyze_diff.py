@@ -9,10 +9,10 @@ def analyze_diff(idx):
         print("Frames not found")
         return
     
-    # CVAT Blue: #2a00ff -> BGR [255, 0, 42]
-    # CVAT Purple: #b725ff -> BGR [255, 37, 183]
+                                            
+                                                
     
-    # Try simple subtraction
+                            
     diff = cv2.absdiff(in_img, out_img)
     mask = np.any(diff > 50, axis=-1).astype(np.uint8) * 255
     
@@ -25,4 +25,4 @@ def analyze_diff(idx):
             print(f"  Box {i}: x={x}, y={y}, w={w}, h={h}")
 
 if __name__ == "__main__":
-    analyze_diff(50) # Sample a middle frame
+    analyze_diff(50)                        
